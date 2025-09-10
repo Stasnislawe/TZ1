@@ -3,12 +3,29 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import Artist, Album, Song, AlbumSong
 from .serializers import (
     ArtistSerializer, AlbumSerializer, SongSerializer,
-    AlbumSongSerializer
+    AlbumSongSerializer, AlbumSongCreateSerializer
 )
 
 
+class AlbumSongViewSet(viewsets.ModelViewSet):
+    """
+    Viewset для управления связями альбом-песня.
+    Позволяет добавлять, удалять и изменять связи между альбомами и песнями.
+    """
+    queryset = AlbumSong.objects.all().select_related('album', 'song')
+    serializer_class = AlbumSongSerializer
+
+    def get_serializer_class(self):
+        if self.action in ['create', 'update', 'partial_update']:
+            return AlbumSongCreateSerializer
+        return AlbumSongSerializer
+
+
 class ArtistViewSet(viewsets.ModelViewSet):
-    """ViewSet для исполнителей"""
+    """ViewSet для исполнителей.
+    Позволяет просматривать, создавать, обновлять и удалять исполнителей.
+    Включает их альбомы с песнями.
+    """
     queryset = Artist.objects.all().prefetch_related('albums__album_songs__song')
     serializer_class = ArtistSerializer
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
@@ -18,7 +35,10 @@ class ArtistViewSet(viewsets.ModelViewSet):
 
 
 class AlbumViewSet(viewsets.ModelViewSet):
-    """ViewSet для альбомов"""
+    """ViewSet для альбомов
+    Позволяет просматривать, создавать, обновлять и удалять альбомы.
+    Включает исполнителя и список песен с порядковыми номерами.
+    """
     queryset = Album.objects.all().select_related('artist').prefetch_related('album_songs__song')
     serializer_class = AlbumSerializer
     filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
@@ -29,7 +49,10 @@ class AlbumViewSet(viewsets.ModelViewSet):
 
 
 class SongViewSet(viewsets.ModelViewSet):
-    """ViewSet для песен"""
+    """ViewSet для песен
+    Позволяет просматривать, создавать, обновлять и удалять песни.
+    Показывает в каких альбомах содержится каждая песня.
+    """
     queryset = Song.objects.all().prefetch_related('song_albums__album__artist')
     serializer_class = SongSerializer
     filter_backends = [filters.SearchFilter, filters.OrderingFilter]
