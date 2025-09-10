@@ -1,11 +1,5 @@
-from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.validators import MinValueValidator
 from django.db import models
-from django.utils import timezone
-
-
-def get_current_year():
-    """Функция для получения текущего года"""
-    return timezone.now().year + 1
 
 
 class Artist(models.Model):
@@ -22,8 +16,7 @@ class Artist(models.Model):
 
 class Album(models.Model):
     """Модель альбома"""
-    release_year = models.PositiveIntegerField(verbose_name='Год выпуска', validators=[MinValueValidator(1860),
-                                                                                       MaxValueValidator(get_current_year)])
+    release_year = models.PositiveIntegerField(verbose_name='Год выпуска', validators=[MinValueValidator(1860)])
     artist = models.ForeignKey(Artist, on_delete=models.CASCADE, related_name='albums', verbose_name='Исполнитель')
 
     class Meta:
