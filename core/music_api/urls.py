@@ -7,6 +7,7 @@ router = DefaultRouter()
 router.register(r'artists', views.ArtistViewSet, basename='artist')
 router.register(r'albums', views.AlbumViewSet, basename='album')
 router.register(r'songs', views.SongViewSet, basename='song')
+router.register(r'album-songs', views.AlbumSongViewSet, basename='album-song')
 
 urlpatterns = [
     path('', include(router.urls)),
