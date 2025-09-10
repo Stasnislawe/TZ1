@@ -10,13 +10,23 @@ class SongSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 
-class AlbumSongSerializer(serializers.ModelSerializer):
-    """Сериализатор для связи альбом-песня"""
-    song = SongSerializer(read_only=True)
+class AlbumSongCreateSerializer(serializers.ModelSerializer):
+    """Сериализатор для создания связи альбом-песня"""
 
     class Meta:
         model = AlbumSong
-        fields = ['song', 'track_number']
+        fields = ['album', 'song', 'track_number']
+
+
+class AlbumSongSerializer(serializers.ModelSerializer):
+    """Сериализатор для отображения связи альбом-песня"""
+    song_name = serializers.CharField(source='song.name', read_only=True)
+    album_info = serializers.CharField(source='album.__str__', read_only=True)
+    artist_name = serializers.CharField(source='album.artist.name', read_only=True)
+
+    class Meta:
+        model = AlbumSong
+        fields = ['id', 'album', 'song', 'song_name', 'track_number', 'album_info', 'artist_name']
 
 
 class AlbumSerializer(serializers.ModelSerializer):
