@@ -43,9 +43,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'django.contrib.flatpages',
-    'music_api',
-    'rest_framework',
-    'django_filters'
+    'music_api', # наше веб-приложение
+    'rest_framework', # DRF
+    'django_filters', # Фильтрация джанго
+    'drf_yasg', # swagger
 ]
 
 SITE_ID = 1
@@ -132,3 +133,24 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Настройки Swagger
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Basic': {
+            'type': 'basic'
+        },
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    },
+    'USE_SESSION_AUTH': True,
+    'JSON_EDITOR': True,
+    'DEFAULT_INFO': 'your_project.urls.swagger_info',
+}
+
+REDOC_SETTINGS = {
+    'LAZY_RENDERING': False,
+}
